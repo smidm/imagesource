@@ -21,9 +21,10 @@ class ImageSourceVideo(ImageSource):
         '''
         super(ImageSourceVideo, self).__init__(mask)
         self.filename = filename
-        self.stream = {}
-        self.next_position = {}
-        self.frame_count = {}
+        self.stream = None
+        self.next_position = None
+        self.frame_count = None
+        self.seek_table_filename = None
         self.__init_stream__()
 
     def __init_stream__(self):
@@ -56,6 +57,7 @@ class ImageSourceVideo(ImageSource):
         else:
             if not self.stream.loadKeyFrameCache(seek_table_filename):
                 return False
+        self.seek_table_filename = seek_table_filename
         return True
 
     def get_image(self, frame, bgr=False):
@@ -92,7 +94,21 @@ class ImageSourceVideo(ImageSource):
             self.get_image(next_frame - 1)
 
     def rewind(self):
-        if not self.stream.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, 0):
+        if not self.stream.set(cv2.CAP_PROP_POS_FRAMES, 0):
             warn('opencv seek unsuccessful, reopening stream')
             self.__init_stream__()
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['stream']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        next_position = self.next_position
+        self.__init_stream__()
+        self.seek(next_position)
+        if self.seek_table_filename:
+            self.init_seeking(self.seek_table_filename)
+
 
