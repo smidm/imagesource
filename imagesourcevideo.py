@@ -5,8 +5,10 @@ import cv2
 try:
     import pyvideocaptureas
     VideoCapture = pyvideocaptureas.VideoCaptureAS
+    has_fast_seeking = True
 except ImportError:
     VideoCapture = cv2.VideoCapture
+    has_fast_seeking = False
 import os.path
 from warnings import warn
 import copy
@@ -31,6 +33,18 @@ class ImageSourceVideo(ImageSource):
         if self.filename is not None:
             self.stream = VideoCapture(self.filename)
             self.frame_count = self.stream.get(cv2.CAP_PROP_FRAME_COUNT)
+            frame_cache = os.path.splitext(self.filename)[0] + '.framecache'
+            if has_fast_seeking and os.path.exists(frame_cache):
+                if not self.stream.loadKeyFrameCache(frame_cache):
+                    warn('unable to load framecache: ' + frame_cache)
+                else:
+                    print('framecache ' + frame_cache + ' loaded')
+            else:
+                print('framecache not found in ' + frame_cache + '\ncreating new framecache')
+                self.stream.registerKeyFrames()
+                if not self.stream.saveKeyFrameCache(frame_cache):
+                    warn('unable to save framecache to ' + frame_cache)
+
         self.next_position = 0
 
     def __copy__(self):
@@ -64,6 +78,8 @@ class ImageSourceVideo(ImageSource):
         if frame >= self.frame_count:
             raise IOError
         if self.stream.set(cv2.CAP_PROP_POS_FRAMES, frame):  # in more recent versions cv2.CAP_PROP_POS_FRAMES
+            if not has_fast_seeking:
+                warn('opencv seek is not frame accurate')
             # cv2.cv.CV_CAP_PROP_POS_FRAMES
             self.next_position = frame
             return self.__get_next_image__(bgr)
@@ -94,6 +110,7 @@ class ImageSourceVideo(ImageSource):
             self.get_image(next_frame - 1)
 
     def rewind(self):
+        self.next_position = 0
         if not self.stream.set(cv2.CAP_PROP_POS_FRAMES, 0):
             warn('opencv seek unsuccessful, reopening stream')
             self.__init_stream__()
