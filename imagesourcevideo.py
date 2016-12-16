@@ -1,5 +1,3 @@
-# requirements:
-# opencv
 from imagesource import ImageSource
 import cv2
 try:
