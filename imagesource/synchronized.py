@@ -2,8 +2,7 @@ from .base import ImageSource
 
 
 class SynchronizedSource(ImageSource):
-    def __init__(self, source, frame_lookup_table, frame_synchronization_errors, mask=None):
-        super(SynchronizedSource, self).__init__(mask)
+    def __init__(self, source, frame_lookup_table, frame_synchronization_errors):
         self.source = source
         self.frame_lookup_table = frame_lookup_table
         self.frame_synchronization_errors = frame_synchronization_errors
