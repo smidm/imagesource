@@ -1,4 +1,4 @@
-from imagesource import ImageSource
+from .base import ImageSource
 import cv2
 try:
     import pyvideocaptureas
@@ -12,19 +12,20 @@ from warnings import warn
 import copy
 
 
-class ImageSourceVideo(ImageSource):
+class VideoSource(ImageSource):
 
     def __init__(self, filename, mask=None):
         '''
         :param filename: video file definition
         :type filename: str
         '''
-        super(ImageSourceVideo, self).__init__(mask)
+        super(VideoSource, self).__init__(mask)
         self.filename = filename
         self.stream = None
         self.next_position = None
         self.frame_count = None
         self.seek_table_filename = None
+        self.color_flag = cv2.COLOR_BGR2RGB
         self.__init_stream__()
 
     def __init_stream__(self):
@@ -72,7 +73,7 @@ class ImageSourceVideo(ImageSource):
         self.seek_table_filename = seek_table_filename
         return True
 
-    def get_image(self, frame, bgr=False):
+    def get_image(self, frame):
         if frame >= self.frame_count:
             raise IOError
         if self.stream.set(cv2.CAP_PROP_POS_FRAMES, frame):  # in more recent versions cv2.CAP_PROP_POS_FRAMES
@@ -86,19 +87,18 @@ class ImageSourceVideo(ImageSource):
             warn('opencv seek unsuccessful, using slower method')
             assert self.next_position <= frame
             while self.next_position <= frame:
-                img = self.__get_next_image__(bgr)
+                img = self.__get_next_image__()
             return img
 
-    def get_next_image(self, bgr=False):
-        return self.__get_next_image__(bgr)
+    def get_next_image(self):
+        return self.__get_next_image__()
 
-    def __get_next_image__(self, bgr=False):
+    def __get_next_image__(self):
         retval, img = self.stream.read()
         if not retval:
             raise IOError
         self.next_position += 1
-        if not bgr:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cvtColor(img, self.color_flag)
         return self.mask_image(img)
 
     def seek(self, next_frame):

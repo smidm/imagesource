@@ -1,4 +1,4 @@
-from imagesourcevideo import ImageSourceVideo
+from .videosource import VideoSource
 from joblib import Memory
 import subprocess
 import numpy as np
@@ -19,9 +19,9 @@ def extract_timestamps(filename, duration_s):
     return ffprobe_timestamps['best_effort_timestamp_time'] * 1000.
 
 
-class ImageSourceTimedVideo(ImageSourceVideo):
+class TimedVideoSource(VideoSource):
     def __init__(self, filename, mask=None):
-        super(ImageSourceTimedVideo, self).__init__(filename, mask)
+        super(TimedVideoSource, self).__init__(filename, mask)
         self.timestamps_ms = None  # e.g. array([    0.,    40.,    80.,   120., ...])
 
     def extract_timestamps(self, duration_s=None):
