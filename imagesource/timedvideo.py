@@ -1,7 +1,9 @@
-from .videosource import VideoSource
+from .video import VideoSource
 from joblib import Memory
 import subprocess
 import numpy as np
+import json
+from warnings import warn
 
 memory = Memory(cachedir='.', verbose=0)
 
@@ -9,14 +11,23 @@ memory = Memory(cachedir='.', verbose=0)
 @memory.cache
 def extract_timestamps(filename, duration_s):
     # throws CalledProcessError
-    ffprobe_cmd = 'ffprobe -select_streams v -show_frames -show_entries ' \
-                  'frame=best_effort_timestamp_time %s -of csv' % filename
+    ffprobe_cmd = 'ffprobe -hide_banner -select_streams v -show_entries ' \
+                  'frame=best_effort_timestamp_time -of json'
     if duration_s:
         ffprobe_cmd += ' -read_intervals %%%d' % duration_s
-    ffprobe_csv = subprocess.check_output(ffprobe_cmd.split()).decode('utf8')
-    ffprobe_timestamps = np.recfromcsv(ffprobe_csv.split('\n'), usecols=1,
-                                       names='best_effort_timestamp_time')
-    return ffprobe_timestamps['best_effort_timestamp_time'] * 1000.
+    ffprobe_output = subprocess.check_output(ffprobe_cmd.split() + [filename]).decode('utf8')
+    ffprobe_timestamps = json.loads(ffprobe_output)
+    if 'frames' not in ffprobe_timestamps:
+        warn('no frames section in ffprobe output')
+        return None          
+            
+    # last entry may be missing
+    if ffprobe_timestamps['frames'][-1] == {}:
+        ffprobe_timestamps['frames'] = ffprobe_timestamps['frames'][:-1]
+    
+    timestamps = [float(frame['best_effort_timestamp_time'])
+                  for frame in ffprobe_timestamps['frames']]
+    return np.array(timestamps) * 1000.
 
 
 class TimedVideoSource(VideoSource):

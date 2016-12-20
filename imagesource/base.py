@@ -12,6 +12,7 @@ class ImageSource(object):
         :type mask: np.ndarray, dtype=bool
         """
         self.mask = mask
+        self.color_conversion_from_bgr = cv2.COLOR_BGR2RGB  # None for BGR
 
     def mask_image(self, img):
         if self.mask is None:
@@ -36,7 +37,8 @@ class ImageSource(object):
             if frame % 100 == 0:
                 print('writing frame ' + str(frame - start) + ' / ' + str(n_frames))
             filename = out_format % frame
-            err = cv2.imwrite(out_format % frame, cv2.cvtColor(self.get_image(frame), cv2.COLOR_RGB2BGR))
+            img = self.get_image(frame)
+            err = cv2.imwrite(out_format % frame, img)
             if not err:
                 raise IOError('Can''t write ' + filename)
 

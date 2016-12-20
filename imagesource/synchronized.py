@@ -8,7 +8,6 @@ class SynchronizedSource(ImageSource):
         self.frame_lookup_table = frame_lookup_table
         self.frame_synchronization_errors = frame_synchronization_errors
         self.synchronized_next_position = 0
-        self.color_flag = color_flag
 
     def get_image(self, frame):
         self.synchronized_next_position = frame + 1
