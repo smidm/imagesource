@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
+try:
+    from pypandoc import convert
+    read_md = lambda f: convert(f, 'rst')
+except ImportError:
+    print("warning: pypandoc module not found, could not convert Markdown to RST")
+    read_md = lambda f: open(f, 'r').read()
 
 setup(
     name='ImageSource',
@@ -9,6 +15,7 @@ setup(
     author_email='m@matejsmid.cz',
     license='The MIT License',
     description='Image sequence abstraction for OpenCV.',
+    long_description=read_md('README.md'),
     classifiers=[
         'Development Status :: 4 - Beta',
 
@@ -24,7 +31,6 @@ setup(
     keywords='image sequence video',
     packages=['imagesource'],
     install_requires=['joblib', 'numpy'],
-    test_suite = 'nose.collector',
-    test_requires=['nose'],
+    test_suite='nose.collector',
 )
 
