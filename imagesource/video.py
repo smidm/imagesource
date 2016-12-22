@@ -99,6 +99,7 @@ class VideoSource(ImageSource):
                 self.__slow_accurate_seek__(next_frame)            
             
     def __slow_accurate_seek__(self, next_frame):
+        warn('using slow but frame accurate seeking (reading frame by frame)')
         if self.next_position > next_frame:
             self.rewind()
         while self.next_position < next_frame:
