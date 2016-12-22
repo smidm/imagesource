@@ -15,7 +15,11 @@ def extract_timestamps(filename, duration_s):
                   'frame=best_effort_timestamp_time -of json'
     if duration_s:
         ffprobe_cmd += ' -read_intervals %%%d' % duration_s
-    ffprobe_output = subprocess.check_output(ffprobe_cmd.split() + [filename]).decode('utf8')
+    try:
+        ffprobe_output = subprocess.check_output(ffprobe_cmd.split() + [filename]).decode('utf8')
+    except OSError as e:
+        print('ffprobe missing, install ffmpeg package')
+        raise
     ffprobe_timestamps = json.loads(ffprobe_output)
     if 'frames' not in ffprobe_timestamps:
         warn('no frames section in ffprobe output')
