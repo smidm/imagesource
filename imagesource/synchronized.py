@@ -38,8 +38,8 @@ class SynchronizedSource(ImageSource):
         self.source.write_images(out_format, n_frames, start)
 
     def save(self, filename):
-        np.savez(filename, {'frame_lookup_table': self.frame_lookup_table,
-                            'frame_synchronization_errors': self.frame_synchronization_errors})
+        np.savez(filename, **{'frame_lookup_table': self.frame_lookup_table,
+                              'frame_synchronization_errors': self.frame_synchronization_errors})
 
     def load(self, filename):
         with np.load(filename) as data:
