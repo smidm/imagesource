@@ -7,6 +7,7 @@ class StaticSource(ImageSource):
         super(StaticSource, self).__init__(mask)
         self.file_name = file_name
         self.img = cv2.imread(self.file_name)
+        assert self.img is not None, 'Can''t load image ' + self.file_name
 
     def get_image(self, frame):
         if self.color_conversion_from_bgr is not None:
