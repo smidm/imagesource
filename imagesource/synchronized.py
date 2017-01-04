@@ -20,11 +20,7 @@ class SynchronizedSource(ImageSource):
         return self.frame_synchronization_errors[frame]
 
     def get_next_image(self):
-        idx = self.frame_lookup_table[self.synchronized_next_position]
-        if idx == -1:
-            return None
-        img = self.get_image(idx)
-        self.synchronized_next_position += 1
+        img = self.get_image(self.synchronized_next_position)
         return img
 
     def seek(self, next_frame):
@@ -34,9 +30,6 @@ class SynchronizedSource(ImageSource):
         self.synchronized_next_position = 0
         self.source.rewind()
         
-    def write_images(self, out_format, n_frames, start=0):
-        self.source.write_images(out_format, n_frames, start)
-
     def save(self, filename):
         np.savez(filename, **{'frame_lookup_table': self.frame_lookup_table,
                               'frame_synchronization_errors': self.frame_synchronization_errors})
