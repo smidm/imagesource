@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='ImageSource',
-    version='1.0b1',
+    version='1.0b2',
     author='Matěj Šmíd',
     url='https://github.com/smidm/imagesource',
     author_email='m@matejsmid.cz',
