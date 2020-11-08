@@ -25,12 +25,9 @@ def extract_timestamps(filename, duration_s):
         warn('no frames section in ffprobe output')
         return None          
             
-    # last entry may be missing
-    if ffprobe_timestamps['frames'][-1] == {}:
-        ffprobe_timestamps['frames'] = ffprobe_timestamps['frames'][:-1]
-    
     timestamps = [float(frame['best_effort_timestamp_time'])
-                  for frame in ffprobe_timestamps['frames']]
+                  for frame in ffprobe_timestamps['frames'][:-1]] # last timestamp is often/always not preset,
+                                                                  # it's safer to skip the last
     return np.array(timestamps) * 1000.
 
 
