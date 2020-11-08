@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name='ImageSource',
-    version='1.0b2',
+    version='1.0',
     author='Matěj Šmíd',
     url='https://github.com/smidm/imagesource',
     author_email='m@matejsmid.cz',
@@ -17,7 +17,7 @@ setup(
     description='Image sequence abstraction for OpenCV.',
     long_description=read_md('README.md'),
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Image Recognition',
