@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
-try:
-    from pypandoc import convert
-    read_md = lambda f: convert(f, 'rst')
-except ImportError:
-    print("warning: pypandoc module not found, could not convert Markdown to RST")
-    read_md = lambda f: open(f, 'r').read()
 
 setup(
     name='ImageSource',
@@ -15,7 +9,8 @@ setup(
     author_email='m@matejsmid.cz',
     license='The MIT License',
     description='Image sequence abstraction for OpenCV.',
-    long_description=read_md('README.md'),
+    long_description=open('README.md', 'r').read(),
+    long_description_content_type='text/markdown',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
 
@@ -32,4 +27,3 @@ setup(
     install_requires=['joblib', 'numpy', 'opencv-python'],
     test_suite='nose.collector',
 )
-
