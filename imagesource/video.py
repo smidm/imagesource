@@ -11,6 +11,8 @@ except ImportError:
 import os.path
 from warnings import warn
 import copy
+from collections import Counter
+import numpy as np
 
 
 class VideoSource(ImageSource):
@@ -96,7 +98,18 @@ class VideoSource(ImageSource):
                 warn('opencv seek is not frame accurate')
             else:
                 warn('opencv seek unsuccessful, using slow seek method')
-                self.__slow_accurate_seek__(next_frame)            
+                self.__slow_accurate_seek__(next_frame)
+
+    def fps(self):
+        """
+        The video source frames per second.
+
+        FPS value is taken for the most common frame timestamp difference, not average.
+
+        :return: fps
+        """
+        frame_time_ms, count = Counter(np.round(np.diff(self.timestamps_ms), 3)).most_common(1)[0]
+        return 1000/frame_time_ms
             
     def __slow_accurate_seek__(self, next_frame):
         warn('using slow but frame accurate seeking (reading frame by frame)')
