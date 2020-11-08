@@ -14,7 +14,7 @@ video = 'tests/data/MOV02522.MPG'
 def test_files():
     hashes_rgb = {}
     hashes_bgr = {}
-    for i in xrange(10):
+    for i in range(10):
         filename = files_template % i
         img = cv2.imread(filename)        
         assert img is not None, 'Can''t load ' + filename
@@ -44,7 +44,7 @@ def test_files():
     tmp_dir = tempfile.mkdtemp()
     tmp_file_template = os.path.join(tmp_dir, '%03d.png')
     images.write_images(tmp_file_template, 10)
-    for i in xrange(10):
+    for i in range(10):
         filename = tmp_file_template % i
         img = cv2.imread(filename)
         eq_(hashlib.md5(img).hexdigest(), hashes_bgr[i])
@@ -55,7 +55,7 @@ def test_video():
     hashes_rgb = {}
     hashes_bgr = {}
     cap = cv2.VideoCapture(video)
-    for i in xrange(10):
+    for i in range(10):
         retval, img = cap.read()
         assert retval
         hashes_bgr[i] = hashlib.md5(img).hexdigest()
@@ -97,7 +97,7 @@ def test_video():
     tmp_dir = tempfile.mkdtemp()
     tmp_file_template = os.path.join(tmp_dir, '%03d.png')
     images.write_images(tmp_file_template, 10)
-    for i in xrange(10):
+    for i in range(10):
         filename = tmp_file_template % i
         img = cv2.imread(filename)
         eq_(hashlib.md5(img).hexdigest(), hashes_bgr[i])
@@ -134,7 +134,7 @@ def test_timedvideo():
 
 def test_synchronized():
     hashes_rgb = {}
-    for i in xrange(10):
+    for i in range(10):
         filename = files_template % i
         img = cv2.imread(filename)
         assert img is not None, 'Can''t load ' + filename

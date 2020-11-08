@@ -1,6 +1,5 @@
 from .base import ImageSource
 import os.path
-import exceptions
 import cv2
 
 
@@ -15,7 +14,7 @@ class FilesSource(ImageSource):
         filename = self.file_name_template % frame
         self.next_position = frame + 1
         if not os.path.exists(filename):
-            raise exceptions.IOError('Can''t open file ' + filename)
+            raise IOError('Can''t open file ' + filename)
         else:
             img = cv2.imread(filename)
             if self.color_conversion_from_bgr is not None:

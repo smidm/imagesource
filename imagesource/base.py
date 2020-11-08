@@ -1,10 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import cv2
+from tqdm import tqdm
 
 
-class ImageSource(object):
-    __metaclass__ = ABCMeta
-
+class ImageSource(object, metaclass=ABCMeta):
     def __init__(self, mask=None):
         """
 
@@ -33,9 +32,7 @@ class ImageSource(object):
         pass
 
     def write_images(self, out_format, n_frames, start=0):
-        for frame in xrange(start, start + n_frames):
-            if frame % 100 == 0:
-                print('writing frame ' + str(frame - start) + ' / ' + str(n_frames))
+        for frame in tqdm(range(start, start + n_frames)):
             filename = out_format % frame
             img = self.get_image(frame)
             err = cv2.imwrite(out_format % frame, img)

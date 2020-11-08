@@ -24,13 +24,12 @@ setup(
 
         'License :: OSI Approved :: MIT License',
 
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
     ],    
     keywords='image sequence video',
     packages=['imagesource'],
-    install_requires=['joblib', 'numpy'],
+    install_requires=['joblib', 'numpy', 'opencv-python'],
     test_suite='nose.collector',
 )
 
