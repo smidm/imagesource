@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='ImageSource',
-    version='1.0',
+    version='1.01',
     author='Matěj Šmíd',
     url='https://github.com/smidm/imagesource',
     author_email='m@matejsmid.cz',
