@@ -5,7 +5,7 @@ import numpy as np
 import json
 from warnings import warn
 
-memory = Memory(cachedir='.', verbose=0)
+memory = Memory(location='.', verbose=0)
 
 
 @memory.cache
