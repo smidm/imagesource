@@ -24,6 +24,6 @@ setup(
     ],    
     keywords='image sequence video',
     packages=['imagesource'],
-    install_requires=['joblib', 'numpy', 'opencv-python'],
+    install_requires=['joblib', 'numpy', 'opencv-python-headless', 'tqdm'],
     test_suite='nose.collector',
 )
